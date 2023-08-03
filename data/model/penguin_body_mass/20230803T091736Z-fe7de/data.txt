@@ -1,0 +1,16 @@
+file: penguin_body_mass.rds
+file_size: 19258
+pin_hash: fe7de45ce6022853
+type: rds
+title: 'penguin_body_mass: a pinned list'
+description: A lm regression modeling workflow
+tags: ~
+created: 20230803T091736Z
+api_version: 1
+user:
+  required_pkgs:
+  - parsnip
+  - recipes
+  - stats
+  - workflows
+  renv_lock: ~
