@@ -481,19 +481,6 @@
       ],
       "Hash": "dea6970ff715ca541c387de363ff405e"
     },
-    "duckdb": {
-      "Package": "duckdb",
-      "Version": "0.8.1-1",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "DBI",
-        "R",
-        "methods",
-        "utils"
-      ],
-      "Hash": "a066bd8c5d84b5a6bf7dc5f24109d85c"
-    },
     "ellipsis": {
       "Package": "ellipsis",
       "Version": "0.3.2",
@@ -1164,6 +1151,16 @@
         "askpass"
       ],
       "Hash": "273a6bb4a9844c296a459d2176673270"
+    },
+    "palmerpenguins": {
+      "Package": "palmerpenguins",
+      "Version": "0.1.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R"
+      ],
+      "Hash": "6c6861efbc13c1d543749e9c7be4a592"
     },
     "parallelly": {
       "Package": "parallelly",
