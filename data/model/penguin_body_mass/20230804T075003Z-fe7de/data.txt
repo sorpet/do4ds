@@ -5,7 +5,7 @@ type: rds
 title: 'penguin_body_mass: a pinned list'
 description: A lm regression modeling workflow
 tags: ~
-created: 20230803T091736Z
+created: 20230804T075003Z
 api_version: 1
 user:
   required_pkgs:

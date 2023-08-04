@@ -1,0 +1,105 @@
+---
+title: "Model"
+format:
+  html:
+    code-fold: true
+---
+
+```{r}
+library(tidymodels)
+library(vetiver)
+library(pins)
+library(plumber)
+```
+
+```{r}
+
+con <- DBI::dbConnect(
+  duckdb::duckdb(), 
+  dbdir = "my-db.duckdb"
+  )
+df <- con |> 
+  DBI::dbReadTable("penguins") |> 
+  tibble::as_tibble() |> 
+  tidyr::drop_na() |> 
+  select(c("body_mass_g", 'bill_length_mm', 'species', 'sex'))
+df |> 
+  head(3)
+DBI::dbDisconnect(con)
+
+
+rec1 <- recipe(body_mass_g ~ ., data = df) |> 
+  step_dummy(all_nominal_predictors())
+
+df_dummies <- rec1 %>%
+  step_dummy(all_nominal_predictors()) |>
+  prep() |>
+  bake(df) |> 
+  relocate(body_mass_g, .after = sex_male)
+
+```
+
+```{r}
+
+rec2 <- recipe(body_mass_g ~ ., data = df_dummies)
+
+model <- 
+  linear_reg()
+
+penguin_wflow <- 
+  workflow() %>% 
+  add_model(model) %>% 
+  add_recipe(rec2)
+
+
+penguin_fit <- 
+  penguin_wflow %>% 
+  fit(data = df_dummies)
+```
+
+```{r}
+penguin_fit %>% 
+  extract_fit_parsnip() %>% 
+  tidy()
+```
+
+```{r}
+v <- vetiver_model(penguin_fit, "penguin_body_mass")
+v
+```
+
+```{r}
+
+model_board <- board_folder('data/model')
+model_board |>  vetiver_pin_write(v)
+```
+
+```{r}
+rm(model_board)
+model_board <- pins::board_folder('data/model')
+model_board |>  pins::pin_versions("penguin_body_mass")
+v <- model_board |>  pins::pin_read("penguin_body_mass")
+```
+
+
+```{r}
+pr() %>%
+  vetiver_api(v) # |>
+  # identity() |> 
+  # pr_run(port = 8080)
+```
+
+```{r}
+# open terminal, start R process. add this code.
+# req <- httr2::request("http://127.0.0.1:8080/predict") |>
+#   httr2::req_body_json(
+#     list(
+#       "bill_length_mm" = 0,
+#       "species_Chinstrap" = FALSE,
+#       "species_Gentoo" = FALSE,
+#       "sex_male" = FALSE
+#     ) |> tibble::as_tibble()
+#   ) |>
+#   httr2::req_perform()
+# res <- httr2::resp_body_json(req)[[1]]$.pred
+```

@@ -7,13 +7,11 @@ format:
 
 ## Penguin Size and Mass by Sex and Species
 
-
 ```{r}
 # con <- DBI::dbConnect(duckdb::duckdb(), dbdir = "my-db.duckdb")
 # DBI::dbWriteTable(con, "penguins", palmerpenguins::penguins, overwrite = TRUE)
 # DBI::dbDisconnect(con)
 ```
-
 
 ```{r}
 #| warning: false
@@ -26,6 +24,7 @@ con <- DBI::dbConnect(
   dbdir = "my-db.duckdb"
   )
 df <- dplyr::tbl(con, "penguins")
+
 ```
 
 ```{r}
@@ -41,7 +40,6 @@ df %>%
   knitr::kable()
 ```
 
-
 ## Penguin Size vs Mass by Species
 
 ```{r}
@@ -50,7 +48,6 @@ df %>%
   geom_point() + 
   geom_smooth(method = "lm")
 ```
-
 ```{r}
 DBI::dbDisconnect(con)
 ```
