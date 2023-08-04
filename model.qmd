@@ -14,18 +14,20 @@ library(plumber)
 
 ```{r}
 
-con <- DBI::dbConnect(
-  duckdb::duckdb(), 
-  dbdir = "my-db.duckdb"
-  )
-df <- con |> 
-  DBI::dbReadTable("penguins") |> 
-  tibble::as_tibble() |> 
+# con <- DBI::dbConnect(
+#   duckdb::duckdb(), 
+#   dbdir = "my-db.duckdb"
+#   )
+# df <- con |> 
+#   DBI::dbReadTable("penguins") |> 
+#   tibble::as_tibble() |> 
+# DBI::dbDisconnect(con)
+df  <- palmerpenguins::penguins |> 
   tidyr::drop_na() |> 
   select(c("body_mass_g", 'bill_length_mm', 'species', 'sex'))
 df |> 
   head(3)
-DBI::dbDisconnect(con)
+
 
 
 rec1 <- recipe(body_mass_g ~ ., data = df) |> 

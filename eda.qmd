@@ -18,12 +18,12 @@ format:
 library(dplyr)
 library(ggplot2)
 
-
-con <- DBI::dbConnect(
-  duckdb::duckdb(), 
-  dbdir = "my-db.duckdb"
-  )
-df <- dplyr::tbl(con, "penguins")
+# con <- DBI::dbConnect(
+#   duckdb::duckdb(), 
+#   dbdir = "my-db.duckdb"
+#   )
+# df <- dplyr::tbl(con, "penguins")
+df <- palmerpenguins::penguins
 
 ```
 
