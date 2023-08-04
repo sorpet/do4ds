@@ -49,6 +49,6 @@ df %>%
   geom_smooth(method = "lm")
 ```
 ```{r}
-DBI::dbDisconnect(con)
+# DBI::dbDisconnect(con)
 ```
 
