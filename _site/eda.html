@@ -127,10 +127,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link active" href="./eda.html" rel="" target="" aria-current="page">
  <span class="menu-text">Penguins EDA</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./model.html" rel="" target="">
- <span class="menu-text">Model</span></a>
-  </li>  
+  <li class="dropdown-header">
+ <span class="menu-text">model.qmd</span></li>
 </ul>
             <div class="quarto-navbar-tools ms-auto">
 </div>
@@ -178,7 +176,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># con &lt;- DBI::dbConnect(duckdb::duckdb(), dbdir = "my-db.duckdb")</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># DBI::dbWriteTable(con, "penguins", palmerpenguins::penguins)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># DBI::dbWriteTable(con, "penguins", palmerpenguins::penguins, overwrite = TRUE)</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># DBI::dbDisconnect(con)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
