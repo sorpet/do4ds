@@ -116,19 +116,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./index.html" rel="" target="">
- <span class="menu-text">Home</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./about.html" rel="" target="">
- <span class="menu-text">About</span></a>
-  </li>  
-  <li class="nav-item">
     <a class="nav-link active" href="./eda.html" rel="" target="" aria-current="page">
  <span class="menu-text">Penguins EDA</span></a>
   </li>  
-  <li class="dropdown-header">
- <span class="menu-text">model.qmd</span></li>
+  <li class="nav-item">
+    <a class="nav-link" href="./model.html" rel="" target="">
+ <span class="menu-text">Model</span></a>
+  </li>  
 </ul>
             <div class="quarto-navbar-tools ms-auto">
 </div>
@@ -186,12 +180,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>con <span class="ot">&lt;-</span> DBI<span class="sc">::</span><span class="fu">dbConnect</span>(</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  duckdb<span class="sc">::</span><span class="fu">duckdb</span>(), </span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">dbdir =</span> <span class="st">"my-db.duckdb"</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">tbl</span>(con, <span class="st">"penguins"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># con &lt;- DBI::dbConnect(</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   duckdb::duckdb(), </span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   dbdir = "my-db.duckdb"</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   )</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># df &lt;- dplyr::tbl(con, "penguins")</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> palmerpenguins<span class="sc">::</span>penguins</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
@@ -209,7 +203,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
-<pre><code>`summarise()` has grouped output by "species". You can override using the
+<pre><code>`summarise()` has grouped output by 'species'. You can override using the
 `.groups` argument.</code></pre>
 </div>
 <div class="cell-output-display">
@@ -235,19 +229,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Adelie</td>
-<td style="text-align: left;">male</td>
-<td style="text-align: right;">40.39041</td>
-<td style="text-align: right;">19.07260</td>
-<td style="text-align: right;">192.4110</td>
-<td style="text-align: right;">4043.493</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Adelie</td>
 <td style="text-align: left;">female</td>
 <td style="text-align: right;">37.25753</td>
 <td style="text-align: right;">17.62192</td>
 <td style="text-align: right;">187.7945</td>
 <td style="text-align: right;">3368.836</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Adelie</td>
+<td style="text-align: left;">male</td>
+<td style="text-align: right;">40.39041</td>
+<td style="text-align: right;">19.07260</td>
+<td style="text-align: right;">192.4110</td>
+<td style="text-align: right;">4043.493</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Adelie</td>
@@ -256,6 +250,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">18.32000</td>
 <td style="text-align: right;">185.6000</td>
 <td style="text-align: right;">3540.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Chinstrap</td>
+<td style="text-align: left;">female</td>
+<td style="text-align: right;">46.57353</td>
+<td style="text-align: right;">17.58824</td>
+<td style="text-align: right;">191.7353</td>
+<td style="text-align: right;">3527.206</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Chinstrap</td>
+<td style="text-align: left;">male</td>
+<td style="text-align: right;">51.09412</td>
+<td style="text-align: right;">19.25294</td>
+<td style="text-align: right;">199.9118</td>
+<td style="text-align: right;">3938.971</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Gentoo</td>
@@ -280,22 +290,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">14.55000</td>
 <td style="text-align: right;">215.7500</td>
 <td style="text-align: right;">4587.500</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Chinstrap</td>
-<td style="text-align: left;">female</td>
-<td style="text-align: right;">46.57353</td>
-<td style="text-align: right;">17.58824</td>
-<td style="text-align: right;">191.7353</td>
-<td style="text-align: right;">3527.206</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Chinstrap</td>
-<td style="text-align: left;">male</td>
-<td style="text-align: right;">51.09412</td>
-<td style="text-align: right;">19.25294</td>
-<td style="text-align: right;">199.9118</td>
-<td style="text-align: right;">3938.971</td>
 </tr>
 </tbody>
 </table>
@@ -328,7 +322,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>DBI<span class="sc">::</span><span class="fu">dbDisconnect</span>(con)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># DBI::dbDisconnect(con)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 

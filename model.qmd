@@ -83,7 +83,6 @@ model_board |>  pins::pin_versions("penguin_body_mass")
 v <- model_board |>  pins::pin_read("penguin_body_mass")
 ```
 
-
 ```{r}
 pr() %>%
   vetiver_api(v) # |>

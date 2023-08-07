@@ -5,9 +5,6 @@ website:
   title: "do4ds"
   navbar:
     left:
-      - href: index.qmd
-        text: Home
-      - about.qmd
       - eda.qmd
       - model.qmd
 
