@@ -74,7 +74,9 @@ v
 # .env can contain secrets and thus should not be committed to git.
 # the get function from the config package reads a config.yml file that contains NON SECRET environment variables that is variables that should differ between e.g. dev, test, and prod environments. 
 
-dotenv::load_dot_env(file = ".env") 
+if (file.exists(".env")) {
+  dotenv::load_dot_env(file = ".env")
+}
 config::get("test_variable") # sets R_CONFIG_ACTIVE (=test/dev/prod/?)
 #model_board <- board_folder('data/model', versioned = TRUE)
 model_board <- pins::board_s3('do4ds-lab-sdp')
