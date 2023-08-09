@@ -10,6 +10,8 @@ library(tidymodels)
 library(vetiver)
 library(pins)
 library(plumber)
+library(paws)
+library(paws.storage)
 ```
 
 ```{r}
