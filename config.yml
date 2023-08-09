@@ -1,0 +1,11 @@
+# config::get() gets values based on R_CONFIG_ACTIVE. Set in .env
+default:
+  test_variable: "this_is_default"
+dev:
+  LOG_LEVEL: INFO
+  test_variable: "this_is_dev"
+test:
+  test_variable: "this_is_test"
+prod:
+  test_variable: "this_is_prod"
+

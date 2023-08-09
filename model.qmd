@@ -53,7 +53,6 @@ penguin_wflow <-
   add_model(model) %>% 
   add_recipe(rec2)
 
-
 penguin_fit <- 
   penguin_wflow %>% 
   fit(data = df_dummies)
@@ -71,24 +70,60 @@ v
 ```
 
 ```{r}
+# in R, the load_dot_env function from the dotenv package reads .env file which contains secrets e.g. API keys, database passwords, etc as well as a R_CONFIG_ACTIVE variable etc.
+# .env can contain secrets and thus should not be committed to git.
+# the get function from the config package reads a config.yml file that contains NON SECRET environment variables that is variables that should differ between e.g. dev, test, and prod environments. 
 
-model_board <- board_folder('data/model')
-model_board |>  vetiver_pin_write(v)
+dotenv::load_dot_env(file = ".env") 
+config::get("test_variable") # sets R_CONFIG_ACTIVE (=test/dev/prod/?)
+#model_board <- board_folder('data/model', versioned = TRUE)
+model_board <- pins::board_s3('do4ds-lab-sdp')
+model_board |> vetiver_pin_write(v)
+model_board |>  pin_versions("penguin_body_mass")
+# rm(model_board)
 ```
 
 ```{r}
-rm(model_board)
-model_board <- pins::board_folder('data/model')
-model_board |>  pins::pin_versions("penguin_body_mass")
-v <- model_board |>  pins::pin_read("penguin_body_mass")
+#model_board <- pins::board_folder('data/model')
+# model_board <- pins::board_s3('do4ds-lab-sdp')
+# model_board |>  pins::pin_versions("penguin_body_mass")
+# v <- model_board |>  vetiver_pin_read("penguin_body_mass")
 ```
+# run api
 
-```{r}
+v <- "/Users/sorpet/code/do4ds/data/model/penguin_body_mass/20230807T100414Z-fe7de/penguin_body_mass.rds" |> readRDS()
+
 pr() %>%
-  vetiver_api(v) # |>
-  # identity() |> 
-  # pr_run(port = 8080)
+  vetiver_api(v) |>
+  pr_run(port = 8080)
+
+# prepare dockerfile
+
+```{r}
+# model_board |>
+#   vetiver_prepare_docker("penguin_body_mass")
+# OBS!: Had to make manual changes to prepared files!
+# 1. add "/" before "data" in line 7 of the plumber.R file.
+#   b <- board_folder(path = "data/model") -> "/data/model"
+# 2. change ports from 8000 to 8080 in the two last lines of the Dockerfile
+# EXPOSE 8080
+# ENTRYPOINT ["R", "-e", "pr <- plumber::plumb('/opt/ml/plumber.R'); pr$run(host = '0.0.0.0', port = 8080)"]
+#
 ```
+
+
+Create an image from a `Dockerfile`
+docker build -t penguin-model . 
+Docker images (and other Docker-related files) are stored and in a location known as the Docker Desktop "disk image" on macOS. However, this is the location of the Docker disk image itself, not a directory you can browse to find individual Docker images in a standard file format. Docker images are not stored as individual files but are managed by Docker itself within this disk image.
+
+
+docker run --rm \
+  -p 8080:8080 \
+  --env-file .env \
+  --name penguin-model-container \
+  -v /Users/sorpet/code/do4ds/data/model:/data/model \
+  penguin-model:latest
+
 
 ```{r}
 # open terminal, start R process. add this code.
@@ -104,3 +139,16 @@ pr() %>%
 #   httr2::req_perform()
 # res <- httr2::resp_body_json(req)[[1]]$.pred
 ```
+
+open terminal, start R process. add this code.
+req <- httr2::request("http://0.0.0.0:8000/") |>
+  httr2::req_body_json(
+    list(
+      "bill_length_mm" = 0,
+      "species_Chinstrap" = FALSE,
+      "species_Gentoo" = FALSE,
+      "sex_male" = FALSE
+    ) |> tibble::as_tibble()
+  ) |>
+  httr2::req_perform()
+res <- httr2::resp_body_json(req)[[1]]$.pred
