@@ -1,0 +1,106 @@
+---
+title: "api_testing"
+---
+
+```{r}
+#model_board <- pins::board_folder('data/model')
+# model_board <- pins::board_s3('do4ds-lab-sdp')
+# model_board |>  pins::pin_versions("penguin_body_mass")
+# v <- model_board |>  vetiver_pin_read("penguin_body_mass")
+```
+
+# run api
+
+```{r}
+# pr() %>%
+#   vetiver_api(v) |>
+#   pr_run(port = 8080)
+```
+
+# troubleshoot api
+```{r}
+# open terminal, start R process. add this code.
+req <- httr2::request("http://127.0.0.1:8080/predict") |>
+  httr2::req_body_json(
+    list(
+      "bill_length_mm" = 0,
+      "species_Chinstrap" = FALSE,
+      "species_Gentoo" = FALSE,
+      "sex_male" = FALSE
+    ) |> tibble::as_tibble()
+  ) |>
+  httr2::req_perform()
+res <- httr2::resp_body_json(req)[[1]]$.pred
+```
+
+```{r}
+#open terminal, start R process. add this code.
+req <- httr2::request("http://0.0.0.0:8000/") |>
+  httr2::req_body_json(
+    list(
+      "bill_length_mm" = 0,
+      "species_Chinstrap" = FALSE,
+      "species_Gentoo" = FALSE,
+      "sex_male" = FALSE
+    ) |> tibble::as_tibble()
+  ) |>
+  httr2::req_perform()
+res <- httr2::resp_body_json(req)[[1]]$.pred
+```
+
+
+# prepare dockerfile
+
+```{r}
+# model_board |>
+#   vetiver_prepare_docker("penguin_body_mass")
+# OBS!: Had to make manual changes to prepared files!
+# 1. add "/" before "data" in line 7 of the plumber.R file.
+#   b <- board_folder(path = "data/model") -> "/data/model"
+# 2. change ports from 8000 to 8080 in the two last lines of the Dockerfile
+# EXPOSE 8080
+# ENTRYPOINT ["R", "-e", "pr <- plumber::plumb('/opt/ml/plumber.R'); pr$run(host = '0.0.0.0', port = 8080)"]
+#
+```
+
+# run docker locally
+
+Create an image from a `Dockerfile`
+```{bash}
+docker build -t penguin-model . 
+
+# build image that works both for M1 chip architecture (amd64) and linux chip architecture(intel 86...). then push to dockerhub
+docker buildx build --platform linux/amd64,linux/arm64 -t sorpet/penguin-model:v2 . --push
+```
+
+Docker images (and other Docker-related files) are stored and in a location known as the Docker Desktop "disk image" on macOS. However, this is the location of the Docker disk image itself, not a directory you can browse to find individual Docker images in a standard file format. Docker images are not stored as individual files but are managed by Docker itself within this disk image.
+
+Run locally
+```{bash}
+#docker run --rm \
+#  -p 8080:8080 \
+#  --env-file .env \
+#  --name penguin-model-container \
+#  -v /Users/sorpet/code/do4ds/data/model:/data/model \
+#  penguin-model:latest
+```
+
+push container image to dockerhub. So it can be downloaded on the server.
+
+```{bash}
+#docker push sorpet/penguin-model:v1
+```
+
+
+# run docker on server
+
+```{bash}
+sudo docker run --rm -d \
+-p 8080:8080 \
+--name penguin-model \
+-v /var/run/aws:/var/run/aws:ro \
+-e AWS_CONTAINER_CREDENTIALS_RELATIVE_URI \
+-e AWS_DEFAULT_REGION=us-west-1 \
+sorpet/penguin-model:v2
+```
+

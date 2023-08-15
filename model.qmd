@@ -65,6 +65,12 @@ penguin_fit %>%
   extract_fit_parsnip() %>% 
   tidy()
 ```
+```{r}
+#reticulate::use_python("/Users/sorpet/code/do4ds/.venv/bin/python3")
+#/opt/homebrew/opt/python@3.11/bin/python3 -m venv .venv
+```
+
+
 
 ```{r}
 v <- vetiver_model(penguin_fit, "penguin_body_mass")
@@ -87,72 +93,45 @@ model_board |>  pin_versions("penguin_body_mass")
 # rm(model_board)
 ```
 
-```{r}
-#model_board <- pins::board_folder('data/model')
-# model_board <- pins::board_s3('do4ds-lab-sdp')
-# model_board |>  pins::pin_versions("penguin_body_mass")
-# v <- model_board |>  vetiver_pin_read("penguin_body_mass")
-```
-# run api
 
-v <- "/Users/sorpet/code/do4ds/data/model/penguin_body_mass/20230807T100414Z-fe7de/penguin_body_mass.rds" |> readRDS()
-
-pr() %>%
-  vetiver_api(v) |>
-  pr_run(port = 8080)
-
-# prepare dockerfile
-
-```{r}
-# model_board |>
-#   vetiver_prepare_docker("penguin_body_mass")
-# OBS!: Had to make manual changes to prepared files!
-# 1. add "/" before "data" in line 7 of the plumber.R file.
-#   b <- board_folder(path = "data/model") -> "/data/model"
-# 2. change ports from 8000 to 8080 in the two last lines of the Dockerfile
-# EXPOSE 8080
-# ENTRYPOINT ["R", "-e", "pr <- plumber::plumb('/opt/ml/plumber.R'); pr$run(host = '0.0.0.0', port = 8080)"]
-#
+```{python}
+# from palmerpenguins import penguins
+# from pandas import get_dummies
+# import numpy as np
+# from sklearn.linear_model import LinearRegression
+# from sklearn import preprocessing
+# from vetiver import VetiverModel
 ```
 
+## Get Data
 
-Create an image from a `Dockerfile`
-docker build -t penguin-model . 
-Docker images (and other Docker-related files) are stored and in a location known as the Docker Desktop "disk image" on macOS. However, this is the location of the Docker disk image itself, not a directory you can browse to find individual Docker images in a standard file format. Docker images are not stored as individual files but are managed by Docker itself within this disk image.
-
-
-docker run --rm \
-  -p 8080:8080 \
-  --env-file .env \
-  --name penguin-model-container \
-  -v /Users/sorpet/code/do4ds/data/model:/data/model \
-  penguin-model:latest
-
-
-```{r}
-# open terminal, start R process. add this code.
-# req <- httr2::request("http://127.0.0.1:8080/predict") |>
-#   httr2::req_body_json(
-#     list(
-#       "bill_length_mm" = 0,
-#       "species_Chinstrap" = FALSE,
-#       "species_Gentoo" = FALSE,
-#       "sex_male" = FALSE
-#     ) |> tibble::as_tibble()
-#   ) |>
-#   httr2::req_perform()
-# res <- httr2::resp_body_json(req)[[1]]$.pred
+```{python}
+# df = penguins.load_penguins().dropna()
+# 
+# df.head(3)
 ```
 
-open terminal, start R process. add this code.
-req <- httr2::request("http://0.0.0.0:8000/") |>
-  httr2::req_body_json(
-    list(
-      "bill_length_mm" = 0,
-      "species_Chinstrap" = FALSE,
-      "species_Gentoo" = FALSE,
-      "sex_male" = FALSE
-    ) |> tibble::as_tibble()
-  ) |>
-  httr2::req_perform()
-res <- httr2::resp_body_json(req)[[1]]$.pred
+## Define Model and Fit
+
+```{python}
+# X = get_dummies(df[['bill_length_mm', 'species', 'sex']], drop_first = True)
+# y = df['body_mass_g']
+# model = LinearRegression().fit(X, y)
+```
+
+## Get some information
+
+```{python}
+# print(f"R^2 {model.score(X,y)}")
+# print(f"Intercept {model.intercept_}")
+# print(f"Columns {X.columns}")
+# print(f"Coefficients {model.coef_}")
+```
+
+```{python}
+# v = VetiverModel(model, model_name='penguin_model', prototype_data=X)
+
+```
+
+## Save to Board
+

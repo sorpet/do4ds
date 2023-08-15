@@ -1,0 +1,9 @@
+---
+title: "do4ds"
+---
+
+This is a Quarto website.
+
+To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+
+<iframe width="780" height="500" src="http://18.214.198.57/penguins/__docs__/" title="Penguin Model Explorer"></iframe>

@@ -5,8 +5,10 @@ website:
   title: "do4ds"
   navbar:
     left:
+      - index.qmd
       - eda.qmd
       - model.qmd
+      - about.qmd
 
 format:
   html:

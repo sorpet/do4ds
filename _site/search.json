@@ -1,31 +1,10 @@
 [
   {
-    "objectID": "hello.html",
-    "href": "hello.html",
-    "title": "Hello, Quarto",
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
     "section": "",
-    "text": "Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see https://quarto.org."
-  },
-  {
-    "objectID": "hello.html#meet-quarto",
-    "href": "hello.html#meet-quarto",
-    "title": "Hello, Quarto",
-    "section": "",
-    "text": "Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see https://quarto.org."
-  },
-  {
-    "objectID": "hello.html#meet-the-penguins",
-    "href": "hello.html#meet-the-penguins",
-    "title": "Hello, Quarto",
-    "section": "Meet the penguins",
-    "text": "Meet the penguins\n\nThe penguins data from the palmerpenguins package contains size measurements for 344 penguins from three species observed on three islands in the Palmer Archipelago, Antarctica.\nThe plot below shows the relationship between flipper and bill lengths of these penguins."
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "do4ds",
-    "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.\n\n1 + 1\n\n[1] 2"
+    "text": "About this site\nThis is a test. Test 4\n\n1 + 1\n\n[1] 2"
   },
   {
     "objectID": "eda.html",
@@ -49,17 +28,45 @@
     "text": "Penguin Size vs Mass by Species\n\n\nCode\ndf %&gt;%\n  ggplot(aes(x = bill_length_mm, y = body_mass_g, color = species)) +\n  geom_point() + \n  geom_smooth(method = \"lm\")\n\n\n`geom_smooth()` using formula = 'y ~ x'\n\n\nWarning: Removed 2 rows containing non-finite values (`stat_smooth()`).\n\n\nWarning: Removed 2 rows containing missing values (`geom_point()`).\n\n\n\n\n\n\n\nCode\n# DBI::dbDisconnect(con)"
   },
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "About this site\nThis is a test. Test 4\n\n1 + 1\n\n[1] 2"
-  },
-  {
     "objectID": "model.html",
     "href": "model.html",
     "title": "Model",
     "section": "",
-    "text": "Code\nlibrary(tidymodels)\n\n\n── Attaching packages ────────────────────────────────────── tidymodels 1.1.0 ──\n\n\n✔ broom        1.0.5     ✔ recipes      1.0.6\n✔ dials        1.2.0     ✔ rsample      1.1.1\n✔ dplyr        1.1.2     ✔ tibble       3.2.1\n✔ ggplot2      3.4.2     ✔ tidyr        1.3.0\n✔ infer        1.0.4     ✔ tune         1.1.1\n✔ modeldata    1.1.0     ✔ workflows    1.1.3\n✔ parsnip      1.1.0     ✔ workflowsets 1.0.1\n✔ purrr        1.0.1     ✔ yardstick    1.2.0\n\n\n── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──\n✖ purrr::discard() masks scales::discard()\n✖ dplyr::filter()  masks stats::filter()\n✖ dplyr::lag()     masks stats::lag()\n✖ recipes::step()  masks stats::step()\n• Search for functions across packages at https://www.tidymodels.org/find/\n\n\nCode\nlibrary(vetiver)\n\n\n\nAttaching package: 'vetiver'\n\n\nThe following object is masked from 'package:tune':\n\n    load_pkgs\n\n\nCode\nlibrary(pins)\nlibrary(plumber)\n\n\n\n\nCode\n# con &lt;- DBI::dbConnect(\n#   duckdb::duckdb(), \n#   dbdir = \"my-db.duckdb\"\n#   )\n# df &lt;- con |&gt; \n#   DBI::dbReadTable(\"penguins\") |&gt; \n#   tibble::as_tibble() |&gt; \n# DBI::dbDisconnect(con)\ndf  &lt;- palmerpenguins::penguins |&gt; \n  tidyr::drop_na() |&gt; \n  select(c(\"body_mass_g\", 'bill_length_mm', 'species', 'sex'))\ndf |&gt; \n  head(3)\n\n\n# A tibble: 3 × 4\n  body_mass_g bill_length_mm species sex   \n        &lt;int&gt;          &lt;dbl&gt; &lt;fct&gt;   &lt;fct&gt; \n1        3750           39.1 Adelie  male  \n2        3800           39.5 Adelie  female\n3        3250           40.3 Adelie  female\n\n\nCode\nrec1 &lt;- recipe(body_mass_g ~ ., data = df) |&gt; \n  step_dummy(all_nominal_predictors())\n\ndf_dummies &lt;- rec1 %&gt;%\n  step_dummy(all_nominal_predictors()) |&gt;\n  prep() |&gt;\n  bake(df) |&gt; \n  relocate(body_mass_g, .after = sex_male)\n\n\n\n\nCode\nrec2 &lt;- recipe(body_mass_g ~ ., data = df_dummies)\n\nmodel &lt;- \n  linear_reg()\n\npenguin_wflow &lt;- \n  workflow() %&gt;% \n  add_model(model) %&gt;% \n  add_recipe(rec2)\n\npenguin_fit &lt;- \n  penguin_wflow %&gt;% \n  fit(data = df_dummies)\n\n\n\n\nCode\npenguin_fit %&gt;% \n  extract_fit_parsnip() %&gt;% \n  tidy()\n\n\n# A tibble: 5 × 5\n  term              estimate std.error statistic  p.value\n  &lt;chr&gt;                &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;\n1 (Intercept)         2169.     272.        7.98 2.44e-14\n2 bill_length_mm        32.5      7.30      4.46 1.15e- 5\n3 species_Chinstrap   -299.      85.9      -3.48 5.77e- 4\n4 species_Gentoo      1095.      74.0      14.8  2.81e-38\n5 sex_male             547.      43.2      12.7  3.25e-30\n\n\n\n\nCode\nv &lt;- vetiver_model(penguin_fit, \"penguin_body_mass\")\nv\n\n\n\n── penguin_body_mass ─ &lt;bundled_workflow&gt; model for deployment \nA lm regression modeling workflow using 4 features\n\n\n\n\nCode\n# in R, the load_dot_env function from the dotenv package reads .env file which contains secrets e.g. API keys, database passwords, etc as well as a R_CONFIG_ACTIVE variable etc.\n# .env can contain secrets and thus should not be committed to git.\n# the get function from the config package reads a config.yml file that contains NON SECRET environment variables that is variables that should differ between e.g. dev, test, and prod environments. \n\ndotenv::load_dot_env(file = \".env\") \n\n\nWarning in readLines(file): incomplete final line found on '.env'\n\nWarning in readLines(file): incomplete final line found on '.env'\n\n\nCode\nconfig::get(\"test_variable\") # sets R_CONFIG_ACTIVE (=test/dev/prod/?)\n\n\n[1] \"this_is_dev\"\n\n\nCode\n#model_board &lt;- board_folder('data/model', versioned = TRUE)\nmodel_board &lt;- pins::board_s3('do4ds-lab-sdp')\nmodel_board |&gt; vetiver_pin_write(v)\n\n\nCreating new version '20230809T082837Z-fe7de'\nWriting to pin 'penguin_body_mass'\n\nCreate a Model Card for your published model\n• Model Cards provide a framework for transparent, responsible reporting\n• Use the vetiver `.Rmd` template as a place to start\n\n\nCode\nmodel_board |&gt;  pin_versions(\"penguin_body_mass\")\n\n\n# A tibble: 3 × 3\n  version                created             hash \n  &lt;chr&gt;                  &lt;dttm&gt;              &lt;chr&gt;\n1 20230808T094811Z-fe7de 2023-08-08 11:48:11 fe7de\n2 20230809T080735Z-fe7de 2023-08-09 10:07:35 fe7de\n3 20230809T082837Z-fe7de 2023-08-09 10:28:37 fe7de\n\n\nCode\n# rm(model_board)\n\n\n\n\nCode\n#model_board &lt;- pins::board_folder('data/model')\n# model_board &lt;- pins::board_s3('do4ds-lab-sdp')\n# model_board |&gt;  pins::pin_versions(\"penguin_body_mass\")\n# v &lt;- model_board |&gt;  vetiver_pin_read(\"penguin_body_mass\")\n\n\n\nrun api\nv &lt;- “/Users/sorpet/code/do4ds/data/model/penguin_body_mass/20230807T100414Z-fe7de/penguin_body_mass.rds” |&gt; readRDS()\npr() %&gt;% vetiver_api(v) |&gt; pr_run(port = 8080)\n\n\nprepare dockerfile\n\n\nCode\n# model_board |&gt;\n#   vetiver_prepare_docker(\"penguin_body_mass\")\n# OBS!: Had to make manual changes to prepared files!\n# 1. add \"/\" before \"data\" in line 7 of the plumber.R file.\n#   b &lt;- board_folder(path = \"data/model\") -&gt; \"/data/model\"\n# 2. change ports from 8000 to 8080 in the two last lines of the Dockerfile\n# EXPOSE 8080\n# ENTRYPOINT [\"R\", \"-e\", \"pr &lt;- plumber::plumb('/opt/ml/plumber.R'); pr$run(host = '0.0.0.0', port = 8080)\"]\n#\n\n\nCreate an image from a Dockerfile docker build -t penguin-model . Docker images (and other Docker-related files) are stored and in a location known as the Docker Desktop “disk image” on macOS. However, this is the location of the Docker disk image itself, not a directory you can browse to find individual Docker images in a standard file format. Docker images are not stored as individual files but are managed by Docker itself within this disk image.\ndocker run –rm\n-p 8080:8080\n–env-file .env\n–name penguin-model-container\n-v /Users/sorpet/code/do4ds/data/model:/data/model\npenguin-model:latest\n\n\nCode\n# open terminal, start R process. add this code.\n# req &lt;- httr2::request(\"http://127.0.0.1:8080/predict\") |&gt;\n#   httr2::req_body_json(\n#     list(\n#       \"bill_length_mm\" = 0,\n#       \"species_Chinstrap\" = FALSE,\n#       \"species_Gentoo\" = FALSE,\n#       \"sex_male\" = FALSE\n#     ) |&gt; tibble::as_tibble()\n#   ) |&gt;\n#   httr2::req_perform()\n# res &lt;- httr2::resp_body_json(req)[[1]]$.pred\n\n\nopen terminal, start R process. add this code. req &lt;- httr2::request(“http://0.0.0.0:8000/”) |&gt; httr2::req_body_json( list( “bill_length_mm” = 0, “species_Chinstrap” = FALSE, “species_Gentoo” = FALSE, “sex_male” = FALSE ) |&gt; tibble::as_tibble() ) |&gt; httr2::req_perform() res &lt;- httr2::resp_body_json(req)[[1]]$.pred"
+    "text": "Code\nlibrary(tidymodels)\n\n\n── Attaching packages ────────────────────────────────────── tidymodels 1.1.0 ──\n\n\n✔ broom        1.0.5     ✔ recipes      1.0.6\n✔ dials        1.2.0     ✔ rsample      1.1.1\n✔ dplyr        1.1.2     ✔ tibble       3.2.1\n✔ ggplot2      3.4.2     ✔ tidyr        1.3.0\n✔ infer        1.0.4     ✔ tune         1.1.1\n✔ modeldata    1.1.0     ✔ workflows    1.1.3\n✔ parsnip      1.1.0     ✔ workflowsets 1.0.1\n✔ purrr        1.0.1     ✔ yardstick    1.2.0\n\n\n── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──\n✖ purrr::discard() masks scales::discard()\n✖ dplyr::filter()  masks stats::filter()\n✖ dplyr::lag()     masks stats::lag()\n✖ recipes::step()  masks stats::step()\n• Dig deeper into tidy modeling with R at https://www.tmwr.org\n\n\nCode\nlibrary(vetiver)\n\n\n\nAttaching package: 'vetiver'\n\n\nThe following object is masked from 'package:tune':\n\n    load_pkgs\n\n\nCode\nlibrary(pins)\nlibrary(plumber)\nlibrary(paws)\n\n\n\nAttaching package: 'paws'\n\n\nThe following object is masked from 'package:parsnip':\n\n    translate\n\n\nCode\nlibrary(paws.storage)\n\n\n\nAttaching package: 'paws.storage'\n\n\nThe following objects are masked from 'package:paws':\n\n    backup, backupstorage, dlm, ebs, efs, finspacedata, fsx, glacier,\n    recyclebin, s3, s3control, s3outposts, storagegateway\nCode\n# con &lt;- DBI::dbConnect(\n#   duckdb::duckdb(), \n#   dbdir = \"my-db.duckdb\"\n#   )\n# df &lt;- con |&gt; \n#   DBI::dbReadTable(\"penguins\") |&gt; \n#   tibble::as_tibble() |&gt; \n# DBI::dbDisconnect(con)\ndf  &lt;- palmerpenguins::penguins |&gt; \n  tidyr::drop_na() |&gt; \n  select(c(\"body_mass_g\", 'bill_length_mm', 'species', 'sex'))\ndf |&gt; \n  head(3)\n\n\n# A tibble: 3 × 4\n  body_mass_g bill_length_mm species sex   \n        &lt;int&gt;          &lt;dbl&gt; &lt;fct&gt;   &lt;fct&gt; \n1        3750           39.1 Adelie  male  \n2        3800           39.5 Adelie  female\n3        3250           40.3 Adelie  female\n\n\nCode\nrec1 &lt;- recipe(body_mass_g ~ ., data = df) |&gt; \n  step_dummy(all_nominal_predictors())\n\ndf_dummies &lt;- rec1 %&gt;%\n  step_dummy(all_nominal_predictors()) |&gt;\n  prep() |&gt;\n  bake(df) |&gt; \n  relocate(body_mass_g, .after = sex_male)\nCode\nrec2 &lt;- recipe(body_mass_g ~ ., data = df_dummies)\n\nmodel &lt;- \n  linear_reg()\n\npenguin_wflow &lt;- \n  workflow() %&gt;% \n  add_model(model) %&gt;% \n  add_recipe(rec2)\n\npenguin_fit &lt;- \n  penguin_wflow %&gt;% \n  fit(data = df_dummies)\nCode\npenguin_fit %&gt;% \n  extract_fit_parsnip() %&gt;% \n  tidy()\n\n\n# A tibble: 5 × 5\n  term              estimate std.error statistic  p.value\n  &lt;chr&gt;                &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;\n1 (Intercept)         2169.     272.        7.98 2.44e-14\n2 bill_length_mm        32.5      7.30      4.46 1.15e- 5\n3 species_Chinstrap   -299.      85.9      -3.48 5.77e- 4\n4 species_Gentoo      1095.      74.0      14.8  2.81e-38\n5 sex_male             547.      43.2      12.7  3.25e-30\nCode\n#reticulate::use_python(\"/Users/sorpet/code/do4ds/.venv/bin/python3\")\n#/opt/homebrew/opt/python@3.11/bin/python3 -m venv .venv\nCode\nv &lt;- vetiver_model(penguin_fit, \"penguin_body_mass\")\nv\n\n\n\n── penguin_body_mass ─ &lt;bundled_workflow&gt; model for deployment \nA lm regression modeling workflow using 4 features\nCode\n# in R, the load_dot_env function from the dotenv package reads .env file which contains secrets e.g. API keys, database passwords, etc as well as a R_CONFIG_ACTIVE variable etc.\n# .env can contain secrets and thus should not be committed to git.\n# the get function from the config package reads a config.yml file that contains NON SECRET environment variables that is variables that should differ between e.g. dev, test, and prod environments. \n\nif (file.exists(\".env\")) {\n  dotenv::load_dot_env(file = \".env\")\n}\nconfig::get(\"test_variable\") # sets R_CONFIG_ACTIVE (=test/dev/prod/?)\n\n\n[1] \"this_is_dev\"\n\n\nCode\n#model_board &lt;- board_folder('data/model', versioned = TRUE)\nmodel_board &lt;- pins::board_s3('do4ds-lab-sdp')\nmodel_board |&gt; vetiver_pin_write(v)\n\n\nCreating new version '20230815T064641Z-fe7de'\nWriting to pin 'penguin_body_mass'\n\nCreate a Model Card for your published model\n• Model Cards provide a framework for transparent, responsible reporting\n• Use the vetiver `.Rmd` template as a place to start\n\n\nCode\nmodel_board |&gt;  pin_versions(\"penguin_body_mass\")\n\n\n# A tibble: 6 × 3\n  version                created             hash \n  &lt;chr&gt;                  &lt;dttm&gt;              &lt;chr&gt;\n1 20230808T094811Z-fe7de 2023-08-08 11:48:11 fe7de\n2 20230809T080735Z-fe7de 2023-08-09 10:07:35 fe7de\n3 20230809T082837Z-fe7de 2023-08-09 10:28:37 fe7de\n4 20230809T092002Z-3cea7 2023-08-09 11:20:02 3cea7\n5 20230811T120750Z-fe7de 2023-08-11 14:07:50 fe7de\n6 20230815T064641Z-fe7de 2023-08-15 08:46:41 fe7de\n\n\nCode\n# rm(model_board)\nCode\n#model_board &lt;- pins::board_folder('data/model')\n# model_board &lt;- pins::board_s3('do4ds-lab-sdp')\n# model_board |&gt;  pins::pin_versions(\"penguin_body_mass\")\n# v &lt;- model_board |&gt;  vetiver_pin_read(\"penguin_body_mass\")"
+  },
+  {
+    "objectID": "model.html#get-data",
+    "href": "model.html#get-data",
+    "title": "Model",
+    "section": "Get Data",
+    "text": "Get Data\n\n\nCode\n# df = penguins.load_penguins().dropna()\n# \n# df.head(3)"
+  },
+  {
+    "objectID": "model.html#define-model-and-fit",
+    "href": "model.html#define-model-and-fit",
+    "title": "Model",
+    "section": "Define Model and Fit",
+    "text": "Define Model and Fit\n\n\nCode\n# X = get_dummies(df[['bill_length_mm', 'species', 'sex']], drop_first = True)\n# y = df['body_mass_g']\n# model = LinearRegression().fit(X, y)"
+  },
+  {
+    "objectID": "model.html#get-some-information",
+    "href": "model.html#get-some-information",
+    "title": "Model",
+    "section": "Get some information",
+    "text": "Get some information\n\n\nCode\n# print(f\"R^2 {model.score(X,y)}\")\n# print(f\"Intercept {model.intercept_}\")\n# print(f\"Columns {X.columns}\")\n# print(f\"Coefficients {model.coef_}\")\n\n\n\n\nCode\n# v = VetiverModel(model, model_name='penguin_model', prototype_data=X)"
+  },
+  {
+    "objectID": "model.html#save-to-board",
+    "href": "model.html#save-to-board",
+    "title": "Model",
+    "section": "Save to Board",
+    "text": "Save to Board"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "do4ds",
+    "section": "",
+    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
   }
 ]
