@@ -20,32 +20,32 @@ title: "api_testing"
 # troubleshoot api
 ```{r}
 # open terminal, start R process. add this code.
-req <- httr2::request("http://127.0.0.1:8080/predict") |>
-  httr2::req_body_json(
-    list(
-      "bill_length_mm" = 0,
-      "species_Chinstrap" = FALSE,
-      "species_Gentoo" = FALSE,
-      "sex_male" = FALSE
-    ) |> tibble::as_tibble()
-  ) |>
-  httr2::req_perform()
-res <- httr2::resp_body_json(req)[[1]]$.pred
+# req <- httr2::request("http://127.0.0.1:8080/predict") |>
+#   httr2::req_body_json(
+#     list(
+#       "bill_length_mm" = 0,
+#       "species_Chinstrap" = FALSE,
+#       "species_Gentoo" = FALSE,
+#       "sex_male" = FALSE
+#     ) |> tibble::as_tibble()
+#   ) |>
+#   httr2::req_perform()
+# res <- httr2::resp_body_json(req)[[1]]$.pred
 ```
 
 ```{r}
 #open terminal, start R process. add this code.
-req <- httr2::request("http://0.0.0.0:8000/") |>
-  httr2::req_body_json(
-    list(
-      "bill_length_mm" = 0,
-      "species_Chinstrap" = FALSE,
-      "species_Gentoo" = FALSE,
-      "sex_male" = FALSE
-    ) |> tibble::as_tibble()
-  ) |>
-  httr2::req_perform()
-res <- httr2::resp_body_json(req)[[1]]$.pred
+# req <- httr2::request("http://0.0.0.0:8000/") |>
+#   httr2::req_body_json(
+#     list(
+#       "bill_length_mm" = 0,
+#       "species_Chinstrap" = FALSE,
+#       "species_Gentoo" = FALSE,
+#       "sex_male" = FALSE
+#     ) |> tibble::as_tibble()
+#   ) |>
+#   httr2::req_perform()
+# res <- httr2::resp_body_json(req)[[1]]$.pred
 ```
 
 
@@ -67,10 +67,10 @@ res <- httr2::resp_body_json(req)[[1]]$.pred
 
 Create an image from a `Dockerfile`
 ```{bash}
-docker build -t penguin-model . 
+#docker build -t penguin-model . 
 
-# build image that works both for M1 chip architecture (amd64) and linux chip architecture(intel 86...). then push to dockerhub
-docker buildx build --platform linux/amd64,linux/arm64 -t sorpet/penguin-model:v2 . --push
+## build image that works both for M1 chip architecture (amd64) and linux chip architecture(intel 86...). then push to dockerhub
+#docker buildx build --platform linux/amd64,linux/arm64 -t sorpet/penguin-model:v2 . --push
 ```
 
 Docker images (and other Docker-related files) are stored and in a location known as the Docker Desktop "disk image" on macOS. However, this is the location of the Docker disk image itself, not a directory you can browse to find individual Docker images in a standard file format. Docker images are not stored as individual files but are managed by Docker itself within this disk image.
@@ -95,12 +95,12 @@ push container image to dockerhub. So it can be downloaded on the server.
 # run docker on server
 
 ```{bash}
-sudo docker run --rm -d \
--p 8080:8080 \
---name penguin-model \
--v /var/run/aws:/var/run/aws:ro \
--e AWS_CONTAINER_CREDENTIALS_RELATIVE_URI \
--e AWS_DEFAULT_REGION=us-west-1 \
-sorpet/penguin-model:v2
+#sudo docker run --rm -d \
+#-p 8080:8080 \
+#--name penguin-model \
+#-v /var/run/aws:/var/run/aws:ro \
+#-e AWS_CONTAINER_CREDENTIALS_RELATIVE_URI \
+#-e AWS_DEFAULT_REGION=us-west-1 \
+#sorpet/penguin-model:v2
 ```
 
